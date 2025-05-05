@@ -53,9 +53,7 @@ class HuggingFaceDataLoader:
     def list_datasets():
         popular_datasets = [
             "papluca/language-identification",
-            "cis-lmu/glotlid",
             "facebook/flores",
             "opus100",
-            "multi_x_science_sum"
         ]
         return popular_datasets

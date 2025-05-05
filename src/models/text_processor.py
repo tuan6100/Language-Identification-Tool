@@ -35,7 +35,7 @@ class TextProcessor:
         # Giữ lại chữ cái, số và ký tự đặc biệt của một số ngôn ngữ
         text = re.sub(r'[^a-zA-Zà-ÿ0-9\u0E00-\u0E7F\u4E00-\u9FFF\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3130-\u318F\s]', ' ', text)
 
-        # Xóa khoảng trắng thừa
+        # xóa khoảng trắng thừa
         text = re.sub(r'\s+', ' ', text)
 
         return text.strip()
@@ -89,7 +89,7 @@ class TextProcessor:
         feature_to_idx = {feature: idx for idx, feature in enumerate(self.feature_names)}
 
         # Chuyển đổi văn bản thành ma trận
-        X = []
+        x = []
         for text in texts:
             ngrams = self.extract_ngrams(text)
             feature_vector = [0] * len(self.feature_names)
@@ -98,9 +98,9 @@ class TextProcessor:
                 if ngram in feature_to_idx:
                     feature_vector[feature_to_idx[ngram]] += 1
 
-            X.append(feature_vector)
+            x.append(feature_vector)
 
-        return np.array(X)
+        return np.array(x)
 
     def transform(self, texts):
         """
@@ -117,7 +117,7 @@ class TextProcessor:
 
         feature_to_idx = {feature: idx for idx, feature in enumerate(self.feature_names)}
 
-        X = []
+        x = []
         for text in texts:
             ngrams = self.extract_ngrams(text)
             feature_vector = [0] * len(self.feature_names)
@@ -126,9 +126,9 @@ class TextProcessor:
                 if ngram in feature_to_idx:
                     feature_vector[feature_to_idx[ngram]] += 1
 
-            X.append(feature_vector)
+            x.append(feature_vector)
 
-        return np.array(X)
+        return np.array(x)
 
     def get_feature_names(self):
         """
