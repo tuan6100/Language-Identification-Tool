@@ -20,3 +20,7 @@ If you'd like to leverage **CUDA** to accelerate computations:
 ```
 
 You may need restart your computer to enable all cuda features.
+
+
+# References:
+- [https://www.kaggle.com/code/mehmetlaudatekman/naive-bayes-based-language-identification-system](https://www.kaggle.com/code/mehmetlaudatekman/naive-bayes-based-language-identification-system)
