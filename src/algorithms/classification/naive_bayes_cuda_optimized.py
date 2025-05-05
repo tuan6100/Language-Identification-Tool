@@ -1,7 +1,7 @@
+import time
+
 import cupy as cp
 import numpy as np
-from collections import defaultdict
-import time
 
 
 class NaiveBayesCUDAOptimized:

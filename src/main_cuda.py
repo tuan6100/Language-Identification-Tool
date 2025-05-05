@@ -136,13 +136,14 @@ def main():
     # Test trên văn bản mới
     print("\nTest với văn bản mới (GPU Optimized):")
     test_samples = [
-        'To simplify, we will reuse the problem of cancer diagnosis to explain these 4 indicators.',
-        'Để đơn giản hóa, ta sẽ sử dụng lại bài toán về chẩn đoán ung thư để giải thích 4 chỉ số này',
-        'Pour simplifier, nous allons réutiliser le problème du diagnostic du cancer pour expliquer ces 4 indicateurs.',
-        '簡単にするために、がん診断の問題を再利用して、これら 4 つの指標を説明します。',
-        '为了简化起见，我们将重新使用癌症诊断的问题来解释这4个指标。',
-        'เพื่อให้เข้าใจง่ายขึ้น เราจะนำปัญหาการวินิจฉัยโรคมะเร็งมาอธิบายตัวบ่งชี้ทั้ง 4 ประการนี้อีกครั้ง',
-        'Basitleştirmek gerekirse, bu 4 göstergeyi açıklamak için kanser tanısı sorununu yeniden kullanacağız.'
+        'Machine learning workflows are often composed of different parts. A typical pipeline consists of a pre-processing step that transforms or imputes the data, and a final predictor that predicts target values.',
+        'Connection Pooling: Giải pháp giúp tối ưu hóa việc sử dụng kết nối đến cơ sở dữ liệu bằng cách duy trì một tập hợp các kết nối sẵn sàng để sử dụng lại, thay vì tạo một kết nối cho mỗi request từ ứng dụng',
+        'Nous sommes trois. Est-ce qu’il y a encore des places disponibles ? Faut-il apporter quelque chose à manger',
+        '打ち合わせの日程について、ご相談いたします',
+        '需要在家休息一两天。特此向您告知并望批准',
+        '더 많은 정보가 필요하시면 주저하지 마시고 저에게 연략주시기 바립니다.',
+        'Basitleştirmek gerekirse, bu 4 göstergeyi açıklamak için kanser tanısı sorununu yeniden kullanacağız.',
+        'Για απλοποίηση, θα χρησιμοποιήσουμε ξανά το πρόβλημα της διάγνωσης του καρκίνου για να εξηγήσουμε αυτούς τους 4 δείκτες.'
     ]
 
     for text in test_samples:

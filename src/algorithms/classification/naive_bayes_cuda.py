@@ -3,7 +3,6 @@ import numpy as np
 from collections import defaultdict, Counter
 import time
 
-
 class NaiveBayesCUDA:
     def __init__(self, alpha=1.0, use_gpu=True):
         """
