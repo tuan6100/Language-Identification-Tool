@@ -1,4 +1,3 @@
-# naive_bayes_algorithm.py
 import numpy as np
 from collections import defaultdict, Counter
 import time

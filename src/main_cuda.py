@@ -1,4 +1,3 @@
-# main_cuda_optimized.py
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
