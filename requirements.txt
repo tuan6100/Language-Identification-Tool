@@ -14,3 +14,4 @@ datasets~=3.5.1
 huggingface_hub
 cupy-cuda12x
 coloredlogs~=15.0.1
+scipy~=1.15.2

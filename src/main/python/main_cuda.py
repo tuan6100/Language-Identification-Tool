@@ -1,38 +1,10 @@
 import time
 
-import seaborn as sns
-from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-
+from python.utils.dataset_comparison import check_exact_duplicates, compare_ngram_structure
+from python.utils.model_evaluation import evaluate_model
 from src.main.python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.text_processor import TextProcessor
-
-
-def evaluate_model(y_true, y_pred, languages):
-    """Đánh giá hiệu suất mô hình"""
-    # Tính accuracy
-    accuracy = accuracy_score(y_true, y_pred)
-    print(f'Accuracy: {accuracy:.4f}')
-    print()
-
-    # Tạo classification report
-    print('Classification Report:')
-    print(classification_report(y_true, y_pred))
-
-    # Vẽ confusion matrix
-    cm = confusion_matrix(y_true, y_pred, labels=languages)
-
-    plt.figure(figsize=(12, 10))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=languages, yticklabels=languages)
-    plt.title('Confusion Matrix - Language Detection')
-    plt.xlabel('Predicted Language')
-    plt.ylabel('True Language')
-    plt.xticks(rotation=45)
-    plt.yticks(rotation=45)
-    plt.tight_layout()
-    plt.show()
 
 
 def main():
@@ -50,11 +22,14 @@ def main():
         )
         x_train, y_train = loader.load_data(loader.dataset_name, "train")
         x_test, y_test = loader.load_data(loader.dataset_name, "test")
-        x_valid, y_valid = loader.load_data(loader.dataset_name, "validation")
+        # x_valid, y_valid = loader.load_data(loader.dataset_name, "validation")
 
     print(f'Số mẫu train: {len(x_train)}')
     print(f'Số mẫu test: {len(x_test)}')
     print(f'Số ngôn ngữ: {len(set(y_test))}')
+    print()
+    print(f'So sánh trùng lặp giữa tập train và test')
+    check_exact_duplicates(x_train, x_test)
     print()
 
     print('Đang xử lý văn bản...')
@@ -67,6 +42,9 @@ def main():
     # Transform dữ liệu test
     x_test_processed = text_processor.transform(x_test)
     print(f'Số đặc trưng: {len(feature_names)}')
+    print("So sánh cấu trúc n-gram")
+    compare_ngram_structure(x_train_processed, x_test_processed, feature_names)
+
     print('Đang huấn luyện mô hình...')
     nb_model = NaiveBayesCUDAOptimized(alpha=1.0, use_gpu=True)
     nb_model.fit(x_train_processed , y_train, feature_names)
