@@ -278,61 +278,61 @@ def compare_ngram_structure(x_train_processed, x_test_processed, feature_names):
     print(f"Bigram - Train: {train_bigram_freq:.6f}, Test: {test_bigram_freq:.6f}, "
           f"Khác biệt: {abs(train_bigram_freq - test_bigram_freq):.6f}")
 
-    # Vẽ biểu đồ so sánh
-    plt.figure(figsize=(10, 6))
-
-    ngram_types = ['Unigram', 'Bigram']
-    train_freqs = [train_unigram_freq, train_bigram_freq]
-    test_freqs = [test_unigram_freq, test_bigram_freq]
-
-    x = np.arange(len(ngram_types))
-    width = 0.35
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    train_bars = ax.bar(x - width/2, train_freqs, width, label='Train')
-    test_bars = ax.bar(x + width/2, test_freqs, width, label='Test')
-
-    ax.set_ylabel('Tần suất trung bình')
-    ax.set_title('So sánh tần suất n-gram giữa tập Train và Test')
-    ax.set_xticks(x)
-    ax.set_xticklabels(ngram_types)
-    ax.legend()
-
-    # Thêm giá trị lên đầu mỗi cột
-    def autolabel(rects):
-        for rect in rects:
-            height = rect.get_height()
-            ax.annotate(f'{height:.6f}',
-                        xy=(rect.get_x() + rect.get_width() / 2, height),
-                        xytext=(0, 3),  # 3 points vertical offset
-                        textcoords="offset points",
-                        ha='center', va='bottom')
-
-    autolabel(train_bars)
-    autolabel(test_bars)
-
-    plt.tight_layout()
-    plt.show()
-
-    # Phân tích chi tiết hơn về sự phân bố của unigram và bigram
-    if train_unigram_indices and train_bigram_indices:
-        plt.figure(figsize=(12, 6))
-
-        plt.subplot(1, 2, 1)
-        plt.hist(train_feature_freq[train_unigram_indices], bins=30, alpha=0.5, label='Train')
-        plt.hist(test_feature_freq[test_unigram_indices], bins=30, alpha=0.5, label='Test')
-        plt.title('Phân phối tần suất Unigram')
-        plt.xlabel('Tần suất')
-        plt.ylabel('Số lượng đặc trưng')
-        plt.legend()
-
-        plt.subplot(1, 2, 2)
-        plt.hist(train_feature_freq[train_bigram_indices], bins=30, alpha=0.5, label='Train')
-        plt.hist(test_feature_freq[test_bigram_indices], bins=30, alpha=0.5, label='Test')
-        plt.title('Phân phối tần suất Bigram')
-        plt.xlabel('Tần suất')
-        plt.ylabel('Số lượng đặc trưng')
-        plt.legend()
-
-        plt.tight_layout()
-        plt.show()
+    # # Vẽ biểu đồ so sánh
+    # plt.figure(figsize=(10, 6))
+    #
+    # ngram_types = ['Unigram', 'Bigram']
+    # train_freqs = [train_unigram_freq, train_bigram_freq]
+    # test_freqs = [test_unigram_freq, test_bigram_freq]
+    #
+    # x = np.arange(len(ngram_types))
+    # width = 0.35
+    #
+    # fig, ax = plt.subplots(figsize=(10, 6))
+    # train_bars = ax.bar(x - width/2, train_freqs, width, label='Train')
+    # test_bars = ax.bar(x + width/2, test_freqs, width, label='Test')
+    #
+    # ax.set_ylabel('Tần suất trung bình')
+    # ax.set_title('So sánh tần suất n-gram giữa tập Train và Test')
+    # ax.set_xticks(x)
+    # ax.set_xticklabels(ngram_types)
+    # ax.legend()
+    #
+    # # Thêm giá trị lên đầu mỗi cột
+    # def autolabel(rects):
+    #     for rect in rects:
+    #         height = rect.get_height()
+    #         ax.annotate(f'{height:.6f}',
+    #                     xy=(rect.get_x() + rect.get_width() / 2, height),
+    #                     xytext=(0, 3),  # 3 points vertical offset
+    #                     textcoords="offset points",
+    #                     ha='center', va='bottom')
+    #
+    # autolabel(train_bars)
+    # autolabel(test_bars)
+    #
+    # plt.tight_layout()
+    # plt.show()
+    #
+    # # Phân tích chi tiết hơn về sự phân bố của unigram và bigram
+    # if train_unigram_indices and train_bigram_indices:
+    #     plt.figure(figsize=(12, 6))
+    #
+    #     plt.subplot(1, 2, 1)
+    #     plt.hist(train_feature_freq[train_unigram_indices], bins=30, alpha=0.5, label='Train')
+    #     plt.hist(test_feature_freq[test_unigram_indices], bins=30, alpha=0.5, label='Test')
+    #     plt.title('Phân phối tần suất Unigram')
+    #     plt.xlabel('Tần suất')
+    #     plt.ylabel('Số lượng đặc trưng')
+    #     plt.legend()
+    #
+    #     plt.subplot(1, 2, 2)
+    #     plt.hist(train_feature_freq[train_bigram_indices], bins=30, alpha=0.5, label='Train')
+    #     plt.hist(test_feature_freq[test_bigram_indices], bins=30, alpha=0.5, label='Test')
+    #     plt.title('Phân phối tần suất Bigram')
+    #     plt.xlabel('Tần suất')
+    #     plt.ylabel('Số lượng đặc trưng')
+    #     plt.legend()
+    #
+    #     plt.tight_layout()
+    #     plt.show()

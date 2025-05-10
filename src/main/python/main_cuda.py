@@ -14,7 +14,6 @@ def main():
         loader = DataLoaderFactory.create_loader("csv")
         x_train, y_train = loader.load_data("training")
         x_test, y_test = loader.load_data("test")
-        x_valid, y_valid = loader.load_data("validation")
     else:
         loader = DataLoaderFactory.create_loader(
             "huggingface",
@@ -22,7 +21,6 @@ def main():
         )
         x_train, y_train = loader.load_data(loader.dataset_name, "train")
         x_test, y_test = loader.load_data(loader.dataset_name, "test")
-        # x_valid, y_valid = loader.load_data(loader.dataset_name, "validation")
 
     print(f'Số mẫu train: {len(x_train)}')
     print(f'Số mẫu test: {len(x_test)}')
@@ -46,7 +44,7 @@ def main():
     compare_ngram_structure(x_train_processed, x_test_processed, feature_names)
 
     print('Đang huấn luyện mô hình...')
-    nb_model = NaiveBayesCUDAOptimized(alpha=1.0, use_gpu=True)
+    nb_model = NaiveBayesCUDAOptimized(alpha=0.01, use_gpu=True)
     nb_model.fit(x_train_processed , y_train, feature_names)
     print('Đang dự đoán...')
     y_pred = nb_model.predict(x_test_processed)
