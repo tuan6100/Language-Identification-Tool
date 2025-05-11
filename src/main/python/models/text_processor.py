@@ -32,10 +32,10 @@ class TextProcessor:
             r'\u00C0-\u024F'       # Latin Extended-A/B 
             r'\u1E00-\u1EFF'       # Latin Extended Additional 
             r'\u0E00-\u0E7F'       # Thai
-            r'\u0400-\u04FF'       # Cyrillic (Nga, Ukraina...)
+            r'\u0400-\u04FF'       # Cyrillic (Russian, Ukraina...)
             r'\u0600-\u06FF'       # Arabic
             r'\u0900-\u097F'       # Devanagari (Hindi, Nepali...)
-            r'\u4E00-\u9FFF'       # CJK Unified Ideographs (Trung, Nhật, Hàn)
+            r'\u4E00-\u9FFF'       # CJK Unified Ideographs (Chinese, Japanese, Korean)
             r'\u3040-\u309F'       # Hiragana (Japanese)
             r'\u30A0-\u30FF'       # Katakana (Japanese)
             r'\uAC00-\uD7AF'       # Hangul Syllables (Korean)
