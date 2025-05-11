@@ -6,17 +6,6 @@ class HuggingFaceDataLoader:
         self.dataset_name = dataset_name
 
     def load_data(self, dataset_name = None, split = None):
-        """
-        Đọc dữ liệu từ Hugging Face Datasets
-
-        Args:
-            dataset_name: str, tên dataset trên Hugging Face (optional)
-            split: str, phần dữ liệu cần load (optional)
-
-        Returns:
-            x: list, danh sách văn bản
-            y: list, danh sách nhãn ngôn ngữ
-        """
         name = dataset_name or self.dataset_name
         split = split
         dataset = load_dataset(name)
@@ -38,14 +27,10 @@ class HuggingFaceDataLoader:
         for col in label_columns:
             if col in data.column_names:
                 labels = data[col]
-
-                # Chuyển đổi label index thành tên ngôn ngữ nếu có thể
                 if hasattr(data.features[col], 'names'):
                     language_names = data.features[col].names
                     return [language_names[label] for label in labels]
-
                 return labels
-
         raise ValueError(f"Không tìm thấy cột nhãn. Các cột có sẵn: {data.column_names}")
 
     @staticmethod

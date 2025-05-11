@@ -184,14 +184,8 @@ def check_exact_duplicates(x_train, x_test):
         duplicates: Danh sách các câu trùng lặp
         duplicate_indices: Dictionary với key là chỉ số trong tập test và value là danh sách chỉ số trong tập train
     """
-
-    start_time = time.time()
     print("Kiểm tra trùng lặp chính xác giữa tập train và test...")
-
-    # Chuẩn hóa câu (loại bỏ khoảng trắng thừa, chuyển về chữ thường)
     normalize = lambda text: text.strip().lower()
-
-    # Tạo dictionary để lưu trữ câu và vị trí của chúng trong tập train
     train_texts = {}
     for i, text in enumerate(x_train):
         norm_text = normalize(text)
@@ -199,34 +193,23 @@ def check_exact_duplicates(x_train, x_test):
             train_texts[norm_text].append(i)
         else:
             train_texts[norm_text] = [i]
-
-    # Kiểm tra các câu trong tập test
     duplicates = []
     duplicate_indices = defaultdict(list)
     duplicate_count = 0
-
     for i, text in enumerate(x_test):
         norm_text = normalize(text)
         if norm_text in train_texts:
             duplicates.append(text)
             duplicate_indices[i] = train_texts[norm_text]
             duplicate_count += 1
-
-    # Tính tỉ lệ trùng lặp
     duplicate_ratio = duplicate_count / len(x_test) * 100
-
-    print(f"Thời gian thực hiện: {time.time() - start_time:.2f} giây")
     print(f"Số lượng câu trùng lặp: {duplicate_count} / {len(x_test)} ({duplicate_ratio:.2f}%)")
-
-    # Hiển thị một số ví dụ trùng lặp
     if duplicates:
         print("\nMột số ví dụ câu trùng lặp:")
         for i, dup_text in enumerate(duplicates[:20]):
             print(f"Ví dụ {i+1}: {dup_text[:100]}..." if len(dup_text) > 100 else f"Ví dụ {i+1}: {dup_text}")
-
         if len(duplicates) > 20:
             print(f"... và {len(duplicates) - 20} câu trùng lặp khác")
-
     return duplicates, duplicate_indices
 
 

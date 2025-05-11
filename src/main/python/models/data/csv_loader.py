@@ -7,16 +7,6 @@ class CSVDataLoader:
         self.paths = self.get_default_path()
 
     def load_data(self, split):
-        """
-        Đọc dữ liệu từ file CSV
-
-        Args:
-            split: str or Path, loại tập dữ liệu
-
-        Returns:
-            x: list, danh sách văn bản
-            y: list, danh sách nhãn ngôn ngữ
-        """
         if split == "training":
             path = self.paths[0]
         elif split == "test":
