@@ -17,20 +17,20 @@ class CSVDataLoader:
             raise ValueError(f"Unknown split: {split}")
         df = pd.read_csv(path)
         x = df['text'].tolist()
-        y = df['language'].tolist()
+        y = df['labels'].tolist()
         return x, y
 
     @staticmethod
     def get_default_path():
         current_file = Path(__file__)
-        project_root = current_file.parent.parent.parent.parent
+        project_root = current_file.parent.parent.parent.parent.parent.parent
         training_data_path = project_root / 'data' / 'training' / 'dataset.csv'
         if not training_data_path.exists():
-            training_data_path = project_root / 'data' / 'training' / 'trainingset.csv'
+            training_data_path = project_root / 'data' / 'training' / 'train.csv'
         test_data_path = project_root / 'data' / 'test' / 'dataset.csv'
         if not test_data_path.exists():
-            test_data_path = project_root / 'data' / 'test' / 'testset.csv'
+            test_data_path = project_root / 'data' / 'test' / 'test.csv'
         validation_data_path = project_root / 'data' / 'validation' / 'dataset.csv'
         if not validation_data_path.exists():
-            validation_data_path = project_root / 'data' / 'validation' / 'validationset.csv'
+            validation_data_path = project_root / 'data' / 'validation' / 'validation.csv'
         return training_data_path, test_data_path, validation_data_path
