@@ -184,7 +184,6 @@ def check_exact_duplicates(x_train, x_test):
         duplicates: Danh sách các câu trùng lặp
         duplicate_indices: Dictionary với key là chỉ số trong tập test và value là danh sách chỉ số trong tập train
     """
-    print("Kiểm tra trùng lặp chính xác giữa tập train và test...")
     normalize = lambda text: text.strip().lower()
     train_texts = {}
     for i, text in enumerate(x_train):

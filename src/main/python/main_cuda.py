@@ -26,7 +26,7 @@ def main():
     print(f'Số mẫu test: {len(x_test)}')
     print(f'Số ngôn ngữ: {len(set(y_test))}')
     print()
-    print(f'So sánh trùng lặp giữa tập train và test')
+    print(f'So sánh trùng lặp giữa tập train và test:')
     check_exact_duplicates(x_train, x_test)
     print()
 
@@ -39,7 +39,7 @@ def main():
 
     x_test_processed = text_processor.transform(x_test)
     print(f'Số đặc trưng: {len(feature_names)}')
-    print("So sánh cấu trúc n-gram")
+    print("So sánh cấu trúc n-gram:")
     compare_ngram_structure(x_train_processed, x_test_processed, feature_names)
 
     print('Đang huấn luyện mô hình...')
