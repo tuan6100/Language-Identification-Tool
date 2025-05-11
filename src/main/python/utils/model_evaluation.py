@@ -13,7 +13,7 @@ def evaluate_model(y_true, y_pred, languages):
 
     # Tính accuracy
     accuracy = accuracy_score(y_true, y_pred)
-    print(f'Accuracy: {accuracy:.4f}')
+    print(f'Accuracy: {accuracy * 100:.2f}%')
     print()
 
     # Tạo classification report

@@ -31,13 +31,12 @@ def main():
     print()
 
     print('Đang xử lý văn bản...')
-    text_processor = TextProcessor(ngram_range=(1, 2), max_features=2000)
+    text_processor = TextProcessor(ngram_range=(1, 4), max_features=5000)
 
-    # Fit và transform dữ liệu train
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
 
-    # Transform dữ liệu test
+
     x_test_processed = text_processor.transform(x_test)
     print(f'Số đặc trưng: {len(feature_names)}')
     print("So sánh cấu trúc n-gram")

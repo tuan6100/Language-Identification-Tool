@@ -19,40 +19,45 @@ class TextProcessor:
     def clean_text(self, text):
         """
         Làm sạch văn bản
-
         Args:
             text: str, văn bản đầu vào
-
         Returns:
             str: văn bản đã được làm sạch
         """
         if not isinstance(text, str):
             return ""
-
-        # Chuyển về chữ thường
         text = text.lower()
-
-        # Giữ lại chữ cái, số và ký tự đặc biệt của một số ngôn ngữ
-        text = re.sub(r'[^a-zA-Zà-ÿ0-9\u0E00-\u0E7F\u4E00-\u9FFF\u0400-\u04FF\u0600-\u06FF\u0900-\u097F\u3130-\u318F\s]', ' ', text)
-
-        # xóa khoảng trắng thừa
+        text = re.sub(
+            r'[^\w\s'
+            r'\u00C0-\u024F'       # Latin Extended-A/B 
+            r'\u1E00-\u1EFF'       # Latin Extended Additional 
+            r'\u0E00-\u0E7F'       # Thai
+            r'\u0400-\u04FF'       # Cyrillic (Nga, Ukraina...)
+            r'\u0600-\u06FF'       # Arabic
+            r'\u0900-\u097F'       # Devanagari (Hindi, Nepali...)
+            r'\u4E00-\u9FFF'       # CJK Unified Ideographs (Trung, Nhật, Hàn)
+            r'\u3040-\u309F'       # Hiragana (Japanese)
+            r'\u30A0-\u30FF'       # Katakana (Japanese)
+            r'\uAC00-\uD7AF'       # Hangul Syllables (Korean)
+            r'\u3130-\u318F'       # Hangul Compatibility Jamo
+            r'\u0590-\u05FF'       # Hebrew
+            r']',
+            ' ',
+            text
+        )
         text = re.sub(r'\s+', ' ', text)
-
         return text.strip()
 
     def extract_ngrams(self, text):
         """
         Trích xuất n-grams từ văn bản
-
         Args:
             text: str, văn bản đầu vào
-
         Returns:
             list: danh sách n-grams
         """
         ngrams = []
         cleaned_text = self.clean_text(text)
-
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
             for i in range(len(cleaned_text) - n + 1):
                 ngram = cleaned_text[i:i+n]
@@ -64,11 +69,9 @@ class TextProcessor:
     def fit_transform(self, texts, labels=None):
         """
         Học vocabulary và chuyển đổi văn bản thành ma trận đặc trưng
-
         Args:
             texts: list, danh sách văn bản
             labels: list, nhãn tương ứng (không bắt buộc)
-
         Returns:
             numpy.array: ma trận đặc trưng
         """
@@ -131,10 +134,4 @@ class TextProcessor:
         return np.array(x)
 
     def get_feature_names(self):
-        """
-        Lấy danh sách tên đặc trưng
-
-        Returns:
-            list: danh sách tên đặc trưng
-        """
         return self.feature_names
