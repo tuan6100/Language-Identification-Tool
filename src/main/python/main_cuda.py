@@ -9,7 +9,7 @@ from src.main.python.models.text_processor import TextProcessor
 
 def main():
     print('Đang đọc dữ liệu...')
-    data_source = "huggingface"
+    data_source = "csv"
     if data_source == "csv":
         loader = DataLoaderFactory.create_loader("csv")
         x_train, y_train = loader.load_data("training")
@@ -31,7 +31,7 @@ def main():
     print()
 
     print('Đang xử lý văn bản...')
-    text_processor = TextProcessor(ngram_range=(1, 4), max_features=5000)
+    text_processor = TextProcessor(ngram_range=(1, 3), max_features=7500)
 
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
@@ -43,8 +43,9 @@ def main():
     compare_ngram_structure(x_train_processed, x_test_processed, feature_names)
 
     print('Đang huấn luyện mô hình...')
-    nb_model = NaiveBayesCUDAOptimized(alpha=0.01, use_gpu=True)
+    nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=True)
     nb_model.fit(x_train_processed , y_train, feature_names)
+
     print('Đang dự đoán...')
     y_pred = nb_model.predict(x_test_processed)
     print('\nĐánh giá mô hình:')

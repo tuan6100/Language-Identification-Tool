@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from src.main.python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
 from src.main.python.models.data import DataLoaderFactory
@@ -7,7 +9,7 @@ from src.main.python.models.text_processor import TextProcessor
 
 @pytest.fixture(scope="module")
 def trained_model_and_processor():
-    text_processor = TextProcessor(ngram_range=(1, 2), max_features=2000)
+    text_processor = TextProcessor(ngram_range=(1, 3), max_features=5000)
     loader = DataLoaderFactory.create_loader(
         "huggingface",
         dataset_name="papluca/language-identification",
@@ -16,7 +18,7 @@ def trained_model_and_processor():
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
 
-    nb_model = NaiveBayesCUDAOptimized(alpha=1.0, use_gpu=True)
+    nb_model = NaiveBayesCUDAOptimized(alpha=0.01, use_gpu=True)
     nb_model.fit(x_train_processed, y_train, feature_names)
 
     return nb_model, text_processor
@@ -28,7 +30,10 @@ def trained_model_and_processor():
         "English"
     ),
     (
-        "Connection Pooling: Giải pháp giúp tối ưu hóa việc sử dụng kết nối đến cơ sở dữ liệu...",
+        "Trong phương thức predict() , chúng tôi sử dụng từng mô hình đã được đào tạo để dự đoán một đầu vào. "
+        "Sau đó, tổng hợp các dự đoán để đưa ra dự đoán cuối cùng. Trong trường hợp này, chúng tôi thêm tất cả các "
+        "dự đoán vào một mảng và chọn dự đoán phổ biến nhất làm kết quả tổng thể của chúng tôi. Chúng tôi đã sử dụng "
+        "hàm mode của Scipy để đơn giản hóa việc tìm dự đoán phổ biến nhất.",
         "Vietnamese"
     ),
     (
@@ -58,6 +63,8 @@ def trained_model_and_processor():
 ])
 def test_language_prediction(trained_model_and_processor, text, expected_lang):
     model, processor = trained_model_and_processor
+    start_time = time.time()
     x_sample = processor.transform([text])
     prediction = model.predict(x_sample)
+    print(' Thời gian dự đoán: %s s' % (time.time() - start_time))
     assert language_names[prediction] == expected_lang

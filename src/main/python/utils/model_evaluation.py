@@ -33,3 +33,6 @@ def evaluate_model(y_true, y_pred, languages):
     plt.yticks(rotation=45)
     plt.tight_layout()
     plt.show()
+
+
+# f1 = 2 / ( precision^-1 + recall^-1)

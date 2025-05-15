@@ -27,7 +27,6 @@ class NaiveBayesCUDAOptimized:
         self.feature_probs_gpu = {}  # Store feature probabilities on GPU
         self.feature_vocab = []
 
-        print(f"Sử dụng {'GPU' if self.use_gpu else 'CPU'} - Optimized Version")
 
     def compute_priors(self, y_idx):
         """Tính xác suất tiên nghiệm P(C) cho mỗi lớp"""
