@@ -1,6 +1,5 @@
 import seaborn as sns
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 def evaluate_model(y_true, y_pred, languages):
     """
@@ -20,11 +19,12 @@ def evaluate_model(y_true, y_pred, languages):
 
     # Tạo classification report
     print('Classification Report:')
+    # f1 = 2 / ( precision^-1 + recall^-1)
     print(classification_report(y_true, y_pred))
 
     # Vẽ confusion matrix
     cm = confusion_matrix(y_true, y_pred, labels=languages)
-    # f1 = 2/(c1^-1 + c2^-1)
+
 
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -37,5 +37,17 @@ def evaluate_model(y_true, y_pred, languages):
     plt.tight_layout()
     plt.show()
 
+# Khong dung sklearn
+def accuracy_score(y_true, y_pred):
+    return 0
+    # TODO: Quan
 
-# f1 = 2 / ( precision^-1 + recall^-1)
+
+def classification_report(y_true, y_pred):
+    return 0
+    # TODO: Cuong
+
+
+def confusion_matrix(y_true, y_pred, labels):
+    return 0
+    # TODO: Tuan Anh
