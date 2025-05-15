@@ -23,7 +23,7 @@ coloredlogs.install(logger=logger)
 def main():
     try:
         logger.info("Đang đọc dữ liệu từ data folder")
-        loader = DataLoaderFactory.create_loader('huggingface')
+        loader = DataLoaderFactory.create_loader('csv')
         x_train, y_train = loader.load_data('training')
         x_test, y_test = loader.load_data('test')
     except:
@@ -65,7 +65,7 @@ def main():
         nb_model = NaiveBayes(alpha=0.001)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
-        y_pred = nb_model.predict(x_test_processed)
+        y_pred = nb_model.predict(x_test_processed) # [en vi en fr ....]
 
     logger.info('\nĐánh giá mô hình:')
     languages = sorted(list(set(y_test)))

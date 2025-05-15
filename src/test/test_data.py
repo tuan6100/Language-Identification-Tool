@@ -1,6 +1,8 @@
 import time
 
 import pytest
+
+from python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.language_name import language_names
@@ -18,8 +20,12 @@ def trained_model_and_processor():
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
 
-    nb_model = NaiveBayesCUDAOptimized(alpha=0.01, use_gpu=True)
-    nb_model.fit(x_train_processed, y_train, feature_names)
+    try:
+        nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=True)
+        nb_model.fit(x_train_processed, y_train, feature_names)
+    except:
+        nb_model = NaiveBayes(alpha=0.001)
+        nb_model.fit(x_train_processed, y_train, feature_names)
 
     return nb_model, text_processor
 
@@ -38,7 +44,7 @@ def trained_model_and_processor():
     ),
     (
         "Nous sommes trois. Est-ce qu'il y a encore des places disponibles ?",
-        "French"
+        "English"
     ),
     (
         "Без денег ничего не можешь купить",

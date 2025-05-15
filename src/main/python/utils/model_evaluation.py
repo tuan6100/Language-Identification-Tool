@@ -12,6 +12,8 @@ def evaluate_model(y_true, y_pred, languages):
     """
 
     # Tính accuracy
+    # y_true = [en, vi, fr, en, ....]
+    # y_pred = [vi, vi, en, fr]
     accuracy = accuracy_score(y_true, y_pred)
     print(f'Accuracy: {accuracy * 100:.2f}%')
     print()
@@ -22,6 +24,7 @@ def evaluate_model(y_true, y_pred, languages):
 
     # Vẽ confusion matrix
     cm = confusion_matrix(y_true, y_pred, labels=languages)
+    # f1 = 2/(c1^-1 + c2^-1)
 
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
