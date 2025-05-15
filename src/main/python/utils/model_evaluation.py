@@ -39,3 +39,7 @@ def evaluate_model(y_true, y_pred, languages):
 
 
 # f1 = 2 / ( precision^-1 + recall^-1)
+# TODO:
+#   - Tuan Anh: confusion_matrix
+#   - Cuong: classification_report
+#   - Quan: accuracy_score
