@@ -24,7 +24,7 @@ def evaluate_model(y_true, y_pred, languages):
 
     # Vẽ confusion matrix
     cm = confusion_matrix(y_true, y_pred, labels=languages)
-    # f1 = 2/(c1^-1 + c2^-1)
+    # f1 = 2 / ( precision^-1 + recall^-1)
 
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -38,7 +38,7 @@ def evaluate_model(y_true, y_pred, languages):
     plt.show()
 
 
-# f1 = 2 / ( precision^-1 + recall^-1)
+
 # TODO:
 #   - Tuan Anh: confusion_matrix
 #   - Cuong: classification_report
