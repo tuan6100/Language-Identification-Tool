@@ -1,6 +1,6 @@
 import seaborn as sns
 from matplotlib import pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 
 def evaluate_model(y_true, y_pred, languages):
     """
@@ -28,7 +28,7 @@ def evaluate_model(y_true, y_pred, languages):
     print(classification_report(y_true, y_pred))
 
     # Vẽ confusion matrix
-    cm = confusion_matrix(y_true, y_pred, labels=languages)
+    cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # f1 = 2 / ( precision^-1 + recall^-1)
 
     plt.figure(figsize=(12, 10))
@@ -47,7 +47,7 @@ def evaluate_model(y_true, y_pred, languages):
 # Khong dung sklearn
 def custom_accuracy_score(y_true, y_pred):
     """
-    Tính accuracy thủ công.
+    Tính tỷ lệ chính xác của mô hình.
 
     Args:
         y_true (list): Danh sách nhãn thực tế.
@@ -70,5 +70,14 @@ def custom_classification_report(y_true, y_pred):
 
 
 def custom_confusion_matrix(y_true, y_pred, labels):
-    return 0
-    # TODO: Tuan Anh
+    n_classes = len(labels)
+    cm = [[0 for _ in range(n_classes)] for _ in range(n_classes)]
+    label_to_idx = {label: idx for idx, label in enumerate(labels)}
+    for true_label, pred_label in zip(y_true, y_pred):
+        try:
+            true_idx = label_to_idx[true_label]
+            pred_idx = label_to_idx[pred_label]
+            cm[true_idx][pred_idx] += 1
+        except KeyError:
+            continue
+    return cm
