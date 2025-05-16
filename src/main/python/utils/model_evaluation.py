@@ -1,5 +1,6 @@
 import seaborn as sns
 from matplotlib import pyplot as plt
+from sklearn.metrics import classification_report, confusion_matrix
 
 def evaluate_model(y_true, y_pred, languages):
     """
@@ -13,18 +14,22 @@ def evaluate_model(y_true, y_pred, languages):
     # Tính accuracy
     # y_true = [en, vi, fr, en, ....]
     # y_pred = [vi, vi, en, fr]
-    accuracy = accuracy_score(y_true, y_pred)
+
+
+
+    # accuracy = accuracy_score(y_true, y_pred)
+    # print(f'Accuracy: {accuracy * 100:.2f}%')
+    # print()
+    accuracy = custom_accuracy_score(y_true, y_pred)
     print(f'Accuracy: {accuracy * 100:.2f}%')
-    print()
 
     # Tạo classification report
     print('Classification Report:')
-    # f1 = 2 / ( precision^-1 + recall^-1)
     print(classification_report(y_true, y_pred))
 
     # Vẽ confusion matrix
     cm = confusion_matrix(y_true, y_pred, labels=languages)
-
+    # f1 = 2 / ( precision^-1 + recall^-1)
 
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -37,17 +42,33 @@ def evaluate_model(y_true, y_pred, languages):
     plt.tight_layout()
     plt.show()
 
+
+
 # Khong dung sklearn
-def accuracy_score(y_true, y_pred):
-    return 0
-    # TODO: Quan
+def custom_accuracy_score(y_true, y_pred):
+    """
+    Tính accuracy thủ công.
+
+    Args:
+        y_true (list): Danh sách nhãn thực tế.
+        y_pred (list): Danh sách nhãn mô hình dự đoán.
+
+    Returns:
+        float: Accuracy (từ 0.0 đến 1.0)
+    """
+    correct = 0
+    total = len(y_true)
+    for true_label, pred_label in zip(y_true, y_pred):
+        if true_label == pred_label:
+            correct += 1
+    return correct / total if total > 0 else 0.0
 
 
-def classification_report(y_true, y_pred):
+def custom_classification_report(y_true, y_pred):
     return 0
     # TODO: Cuong
 
 
-def confusion_matrix(y_true, y_pred, labels):
+def custom_confusion_matrix(y_true, y_pred, labels):
     return 0
     # TODO: Tuan Anh

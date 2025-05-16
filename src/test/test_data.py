@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from python.algorithms.classification.naive_bayes import NaiveBayes
+from src.main.python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.language_name import language_names
