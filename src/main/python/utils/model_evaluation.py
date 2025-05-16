@@ -23,14 +23,12 @@ def evaluate_model(y_true, y_pred, languages):
     accuracy = custom_accuracy_score(y_true, y_pred)
     print(f'Accuracy: {accuracy * 100:.2f}%')
 
+    cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # Tạo classification report
     print('Classification Report:')
     print(classification_report(y_true, y_pred))
 
     # Vẽ confusion matrix
-    cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
-    # f1 = 2 / ( precision^-1 + recall^-1)
-
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=languages, yticklabels=languages)
@@ -64,9 +62,36 @@ def custom_accuracy_score(y_true, y_pred):
     return correct / total if total > 0 else 0.0
 
 
-def custom_classification_report(y_true, y_pred):
-    return 0
+def custom_classification_report(confusion_matrix):
+    """
+    Tạo báo cáo phân loại với precision, recall và F1-score
+    dựa trên ma trận nhầm lẫn.
+
+    Returns:
+        dict: A report
+
+    Examples:
+        precision    recall  f1-score   support
+            en       0.99      1.00      0.99       500
+            fr       0.99      1.00      1.00       500
+            ja       1.00      1.00      1.00       500
+            vi       1.00      1.00      1.00       500
+        accuracy                           0.99     10000
+        macro avg       0.99      0.99      0.99     10000
+        weighted avg       0.99      0.99      0.99     10000
+    """
+
     # TODO: Cuong
+    results = {
+        'class_metrics': {},
+        'weighted_avg': {
+            'precision': 0,
+            'recall': 0,
+            'f1-score': 0,
+            'support': 0
+        }
+    }
+    return results
 
 
 def custom_confusion_matrix(y_true, y_pred, labels):
