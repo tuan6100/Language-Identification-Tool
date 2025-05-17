@@ -26,7 +26,7 @@ def evaluate_model(y_true, y_pred, languages):
     cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # Tạo classification report
     print('Classification Report:')
-    classification_report(y_true, y_pred)
+    classification_report_from_cm(cm, labels=languages)
 
     # Vẽ confusion matrix
     plt.figure(figsize=(12, 10))
@@ -130,3 +130,67 @@ def custom_confusion_matrix(y_true, y_pred, labels):
         except KeyError:
             continue
     return cm
+
+def classification_report_from_cm(cm, labels):
+    n_classes = len(labels)
+    report = {}
+    cm = np.array(cm)
+
+    total_correct = np.trace(cm)
+    total_samples = cm.sum()
+
+    precisions = []
+    recalls = []
+    f1s = []
+    supports = cm.sum(axis=1)  # số mẫu thực tế theo từng class
+
+    for i, label in enumerate(labels):
+        tp = cm[i][i]
+        fp = cm[:, i].sum() - tp
+        fn = cm[i, :].sum() - tp
+
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+        precisions.append(precision)
+        recalls.append(recall)
+        f1s.append(f1_score)
+
+        report[label] = {
+            'precision': round(precision, 2),
+            'recall': round(recall, 2),
+            'f1-score': round(f1_score, 2),
+            'support': int(supports[i])
+        }
+
+    accuracy = total_correct / total_samples if total_samples > 0 else 0.0
+
+    macro_avg = {
+        'precision': round(np.mean(precisions), 2),
+        'recall': round(np.mean(recalls), 2),
+        'f1-score': round(np.mean(f1s), 2),
+        'support': int(total_samples)
+    }
+
+    weighted_avg = {
+        'precision': round(np.average(precisions, weights=supports), 2),
+        'recall': round(np.average(recalls, weights=supports), 2),
+        'f1-score': round(np.average(f1s, weights=supports), 2),
+        'support': int(total_samples)
+    }
+
+    # In báo cáo
+    print(f"{'Class':<10} {'Precision':>10} {'Recall':>10} {'F1-score':>10} {'Support':>10}")
+    for label in labels:
+        metrics = report[label]
+        print(f"{label:<10} {metrics['precision']:>10.2f} {metrics['recall']:>10.2f} {metrics['f1-score']:>10.2f} {metrics['support']:>10}")
+
+    print(f"\n{'Accuracy':<10} {accuracy:>10.2f}")
+
+    return {
+        'per_class': report,
+        'accuracy': round(accuracy, 2),
+        'macro avg': macro_avg,
+        'weighted avg': weighted_avg
+    }
