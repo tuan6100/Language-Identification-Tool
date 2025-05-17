@@ -1,6 +1,7 @@
 import seaborn as sns
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix
+from classification_report import classification_report
 
 def evaluate_model(y_true, y_pred, languages):
     """

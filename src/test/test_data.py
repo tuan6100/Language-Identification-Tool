@@ -16,7 +16,7 @@ def trained_model_and_processor():
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
 
-    nb_model = NaiveBayesCUDAOptimized(alpha=1.0, use_gpu=True)
+    nb_model = NaiveBayesCUDAOptimized(alpha=1.0, use_gpu=False)
     nb_model.fit(x_train_processed, y_train, feature_names)
 
     return nb_model, text_processor
