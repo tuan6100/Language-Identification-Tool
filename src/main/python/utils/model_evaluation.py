@@ -26,7 +26,7 @@ def evaluate_model(y_true, y_pred, languages):
     cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # Tạo classification report
     print('Classification Report:')
-    print(classification_report(y_true, y_pred))
+    classification_report(y_true, y_pred)
 
     # Vẽ confusion matrix
     plt.figure(figsize=(12, 10))
@@ -116,7 +116,6 @@ def classification_report(y_true, y_pred):
             f"{label:<10} {metrics['precision']:>10.2f} {metrics['recall']:>10.2f} {metrics['f1-score']:>10.2f} {metrics['support']:>10}")
 
     print(f"\n{'Accuracy':<10} {accuracy:>10.2f}")
-    return report
 
 
 def custom_confusion_matrix(y_true, y_pred, labels):
