@@ -14,19 +14,21 @@ def evaluate_model(y_true, y_pred, languages):
     # Tính accuracy
     # y_true = [en, vi, fr, en, ....]
     # y_pred = [vi, vi, en, fr]
-    accuracy = accuracy_score(y_true, y_pred)
-    print(f'Accuracy: {accuracy * 100:.2f}%')
-    print()
 
+
+
+    # accuracy = accuracy_score(y_true, y_pred)
+    # print(f'Accuracy: {accuracy * 100:.2f}%')
+    # print()
+    accuracy = custom_accuracy_score(y_true, y_pred)
+    print(f'Accuracy: {accuracy * 100:.2f}%')
+
+    cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # Tạo classification report
     print('Classification Report:')
-    # f1 = 2 / ( precision^-1 + recall^-1)
     print(classification_report(y_true, y_pred))
 
     # Vẽ confusion matrix
-    cm = confusion_matrix(y_true, y_pred, labels=languages)
-
-
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=languages, yticklabels=languages)
@@ -38,11 +40,26 @@ def evaluate_model(y_true, y_pred, languages):
     plt.tight_layout()
     plt.show()
 
-# Khong dung sklearn
-def accuracy_score(y_true, y_pred):
-    return 0
-    # TODO: Quan
 
+
+# Khong dung sklearn
+def custom_accuracy_score(y_true, y_pred):
+    """
+    Tính tỷ lệ chính xác của mô hình.
+
+    Args:
+        y_true (list): Danh sách nhãn thực tế.
+        y_pred (list): Danh sách nhãn mô hình dự đoán.
+
+    Returns:
+        float: Accuracy (từ 0.0 đến 1.0)
+    """
+    correct = 0
+    total = len(y_true)
+    for true_label, pred_label in zip(y_true, y_pred):
+        if true_label == pred_label:
+            correct += 1
+    return correct / total if total > 0 else 0.0
 
 def classification_report(y_true, y_pred):
     labels = sorted(set(y_true) | set(y_pred))
@@ -99,14 +116,18 @@ def classification_report(y_true, y_pred):
             f"{label:<10} {metrics['precision']:>10.2f} {metrics['recall']:>10.2f} {metrics['f1-score']:>10.2f} {metrics['support']:>10}")
 
     print(f"\n{'Accuracy':<10} {accuracy:>10.2f}")
-    print(
-        f"{'Macro avg':<10} {macro_avg['precision']:>10.2f} {macro_avg['recall']:>10.2f} {macro_avg['f1-score']:>10.2f} {macro_avg['support']:>10}")
-    print(
-        f"{'Weighted avg':<10} {weighted_avg['precision']:>10.2f} {weighted_avg['recall']:>10.2f} {weighted_avg['f1-score']:>10.2f} {weighted_avg['support']:>10}")
-
     return report
 
 
-def confusion_matrix(y_true, y_pred, labels):
-    return 0
-    # TODO: Tuan Anh
+def custom_confusion_matrix(y_true, y_pred, labels):
+    n_classes = len(labels)
+    cm = [[0 for _ in range(n_classes)] for _ in range(n_classes)]
+    label_to_idx = {label: idx for idx, label in enumerate(labels)}
+    for true_label, pred_label in zip(y_true, y_pred):
+        try:
+            true_idx = label_to_idx[true_label]
+            pred_idx = label_to_idx[pred_label]
+            cm[true_idx][pred_idx] += 1
+        except KeyError:
+            continue
+    return cm

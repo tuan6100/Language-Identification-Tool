@@ -62,6 +62,7 @@ def main():
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed)
     except:
+        logger.info(f"Sử dụng CPU ")
         nb_model = NaiveBayes(alpha=0.001)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
