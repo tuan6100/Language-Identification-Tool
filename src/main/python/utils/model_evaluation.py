@@ -30,7 +30,7 @@ def evaluate_model(y_true, y_pred, languages):
     custom_classification_report(cm, labels=languages)
     print()
 
-    # Vẽ confusion matrix
+
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=languages, yticklabels=languages)
@@ -41,7 +41,6 @@ def evaluate_model(y_true, y_pred, languages):
     plt.yticks(rotation=45)
     plt.tight_layout()
     plt.show()
-
 
 
 # Khong dung sklearn
@@ -154,3 +153,4 @@ def custom_classification_report(cm, labels):
     table.align = "r"
     table.align[""] = "l"
     print(table)
+
