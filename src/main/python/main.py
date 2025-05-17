@@ -68,7 +68,6 @@ def main():
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed) # [en vi en fr ....]
 
-    logger.info('\nĐánh giá mô hình:')
     languages = sorted(list(set(y_test)))
     evaluate_model(y_test, y_pred, languages)
 
