@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
+from prettytable import PrettyTable
 
 def evaluate_model(y_true, y_pred, languages):
     """
@@ -26,7 +27,8 @@ def evaluate_model(y_true, y_pred, languages):
     cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
     # Tạo classification report
     print('Classification Report:')
-    classification_report_from_cm(cm, labels=languages)
+    custom_classification_report(cm, labels=languages)
+    print()
 
     # Vẽ confusion matrix
     plt.figure(figsize=(12, 10))
@@ -61,62 +63,6 @@ def custom_accuracy_score(y_true, y_pred):
             correct += 1
     return correct / total if total > 0 else 0.0
 
-def classification_report(y_true, y_pred):
-    labels = sorted(set(y_true) | set(y_pred))
-    report = {}
-    total_correct = 0
-    total_samples = len(y_true)
-
-    for label in labels:
-        tp = sum((yt == label and yp == label) for yt, yp in zip(y_true, y_pred))
-        fp = sum((yt != label and yp == label) for yt, yp in zip(y_true, y_pred))
-        fn = sum((yt == label and yp != label) for yt, yp in zip(y_true, y_pred))
-        support = sum(yt == label for yt in y_true)
-
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-
-        report[label] = {
-            'precision': round(precision, 2),
-            'recall': round(recall, 2),
-            'f1-score': round(f1_score, 2),
-            'support': support
-        }
-
-        total_correct += tp
-
-    accuracy = total_correct / total_samples if total_samples > 0 else 0.0
-
-    # Tính macro average
-    precisions = [v['precision'] for v in report.values()]
-    recalls = [v['recall'] for v in report.values()]
-    f1s = [v['f1-score'] for v in report.values()]
-    supports = [v['support'] for v in report.values()]
-    total_support = sum(supports)
-
-    macro_avg = {
-        'precision': round(np.mean(precisions), 2),
-        'recall': round(np.mean(recalls), 2),
-        'f1-score': round(np.mean(f1s), 2),
-        'support': total_support
-    }
-
-    weighted_avg = {
-        'precision': round(np.average(precisions, weights=supports), 2),
-        'recall': round(np.average(recalls, weights=supports), 2),
-        'f1-score': round(np.average(f1s, weights=supports), 2),
-        'support': total_support
-    }
-
-    # In kết quả
-    print(f"{'Class':<10} {'Precision':>10} {'Recall':>10} {'F1-score':>10} {'Support':>10}")
-    for label, metrics in report.items():
-        print(
-            f"{label:<10} {metrics['precision']:>10.2f} {metrics['recall']:>10.2f} {metrics['f1-score']:>10.2f} {metrics['support']:>10}")
-
-    print(f"\n{'Accuracy':<10} {accuracy:>10.2f}")
-
 
 def custom_confusion_matrix(y_true, y_pred, labels):
     n_classes = len(labels)
@@ -131,28 +77,22 @@ def custom_confusion_matrix(y_true, y_pred, labels):
             continue
     return cm
 
-def classification_report_from_cm(cm, labels):
-    n_classes = len(labels)
+
+def custom_classification_report(cm, labels):
     report = {}
     cm = np.array(cm)
-
-    total_correct = np.trace(cm)
     total_samples = cm.sum()
-
     precisions = []
     recalls = []
     f1s = []
-    supports = cm.sum(axis=1)  # số mẫu thực tế theo từng class
-
+    supports = cm.sum(axis=1)
     for i, label in enumerate(labels):
         tp = cm[i][i]
-        fp = cm[:, i].sum() - tp
-        fn = cm[i, :].sum() - tp
-
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        fp = cm[:, i].sum()
+        fn = cm[i, :].sum()
+        precision = tp / fp if fp > 0 else 0.0
+        recall = tp / fn if fn > 0 else 0.0
         f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-
         precisions.append(precision)
         recalls.append(recall)
         f1s.append(f1_score)
@@ -163,34 +103,54 @@ def classification_report_from_cm(cm, labels):
             'f1-score': round(f1_score, 2),
             'support': int(supports[i])
         }
+    tp_sum = np.sum([cm[i][i] for i in range(len(labels))])
+    fp_sum = np.sum([np.sum(cm[:, i]) - cm[i][i] for i in range(len(labels))])
+    fn_sum = np.sum([np.sum(cm[i, :]) - cm[i][i] for i in range(len(labels))])
 
-    accuracy = total_correct / total_samples if total_samples > 0 else 0.0
+    micro_precision = tp_sum / (tp_sum + fp_sum) if (tp_sum + fp_sum) > 0 else 0.0
+    micro_recall = tp_sum / (tp_sum + fn_sum) if (tp_sum + fn_sum) > 0 else 0.0
+    micro_f1 = 2 * micro_precision * micro_recall / (micro_precision + micro_recall) if (micro_precision + micro_recall) > 0 else 0.0
+    macro_precision = np.mean(precisions)
+    macro_recall = np.mean(recalls)
+    macro_f1 = np.mean(f1s)
 
-    macro_avg = {
-        'precision': round(np.mean(precisions), 2),
-        'recall': round(np.mean(recalls), 2),
-        'f1-score': round(np.mean(f1s), 2),
-        'support': int(total_samples)
-    }
+    weighted_precision = np.average(precisions, weights=supports) if sum(supports) > 0 else 0.0
+    weighted_recall = np.average(recalls, weights=supports) if sum(supports) > 0 else 0.0
+    weighted_f1 = np.average(f1s, weights=supports) if sum(supports) > 0 else 0.0
 
-    weighted_avg = {
-        'precision': round(np.average(precisions, weights=supports), 2),
-        'recall': round(np.average(recalls, weights=supports), 2),
-        'f1-score': round(np.average(f1s, weights=supports), 2),
-        'support': int(total_samples)
-    }
-
-    # In báo cáo
-    print(f"{'Class':<10} {'Precision':>10} {'Recall':>10} {'F1-score':>10} {'Support':>10}")
-    for label in labels:
+    table = PrettyTable()
+    table.field_names = ["language", "precision", "recall", "f1-score", "support"]
+    for i, label in enumerate(labels):
         metrics = report[label]
-        print(f"{label:<10} {metrics['precision']:>10.2f} {metrics['recall']:>10.2f} {metrics['f1-score']:>10.2f} {metrics['support']:>10}")
-
-    print(f"\n{'Accuracy':<10} {accuracy:>10.2f}")
-
-    return {
-        'per_class': report,
-        'accuracy': round(accuracy, 2),
-        'macro avg': macro_avg,
-        'weighted avg': weighted_avg
-    }
+        table.add_row([
+            label,
+            f"{metrics['precision']:.2f}",
+            f"{metrics['recall']:.2f}",
+            f"{metrics['f1-score']:.2f}",
+            f"{metrics['support']}"
+        ])
+    table.add_row(["", "", "", "", ""], divider=True)
+    table.add_row([
+        "micro avg",
+        f"{micro_precision:.2f}",
+        f"{micro_recall:.2f}",
+        f"{micro_f1:.2f}",
+        f"{total_samples}"
+    ])
+    table.add_row([
+        "macro avg",
+        f"{macro_precision:.2f}",
+        f"{macro_recall:.2f}",
+        f"{macro_f1:.2f}",
+        f"{total_samples}"
+    ])
+    table.add_row([
+        "weighted avg",
+        f"{weighted_precision:.2f}",
+        f"{weighted_recall:.2f}",
+        f"{weighted_f1:.2f}",
+        f"{total_samples}"
+    ])
+    table.align = "r"
+    table.align[""] = "l"
+    print(table)
