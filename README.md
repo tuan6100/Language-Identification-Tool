@@ -15,6 +15,7 @@ If you'd like to leverage **CUDA** to accelerate computations:
 3. Then, run the following commands to complete the setup:
 
 ```bash
+   conda install cuda -c nvidia
    pip install nvidia-cuda-runtime-cu12
    pip install -U pip setuptools wheel
 ```
