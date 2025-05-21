@@ -20,8 +20,9 @@ If you'd like to leverage **CUDA** to accelerate computations:
    pip install -U pip setuptools wheel
 ```
 
-You may need to restart your computer to enable all CUDA functionality..
+You may need to restart your computer to enable all CUDA functionality.
 
+For more information, please visit <a href="https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html">this page</a>
 
 ## References
 - <a href="https://www.kaggle.com/code/mehmetlaudatekman/naive-bayes-based-language-identification-system">kaggle.com/code/mehmetlaudatekman/naive-bayes-based-language-identification-system</a>
