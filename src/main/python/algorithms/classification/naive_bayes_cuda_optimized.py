@@ -5,7 +5,7 @@ import numpy as np
 
 
 class NaiveBayesCUDAOptimized:
-    def __init__(self, alpha=1.0, use_gpu=True):
+    def __init__(self, alpha=1.0, use_gpu=False):
         """
         Khởi tạo thuật toán Naive Bayes tối ưu GPU
 
