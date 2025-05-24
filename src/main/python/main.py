@@ -1,17 +1,15 @@
 import logging
 import os
 import time
-import datetime
 
 import coloredlogs
-from sklearn.metrics import accuracy_score
 
 from algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
-from utils.dataset_comparison import compare_ngram_structure, check_exact_duplicates
-from utils.model_evaluation import evaluate_model
 from src.main.python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.text_processor import TextProcessor
+from utils.dataset_comparison import check_exact_duplicates
+from utils.model_evaluation import evaluate_model
 
 # logging.basicConfig(
 #     level=logging.INFO,
@@ -69,6 +67,7 @@ def main():
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed) # [en vi en fr ....]
+
 
     languages = sorted(list(set(y_test)))
     accuracy = evaluate_model(y_test, y_pred, languages)
