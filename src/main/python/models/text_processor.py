@@ -14,7 +14,7 @@ class TextProcessor:
         self.ngram_range = ngram_range
         self.max_features = max_features
         self.feature_names = []
-        self.feature_counts = {}
+
 
     def clean_text(self, text):
         """
@@ -48,6 +48,7 @@ class TextProcessor:
         text = re.sub(r'\s+', ' ', text)
         return text.strip()
 
+
     def extract_ngrams(self, text):
         """
         Trích xuất n-grams từ văn bản
@@ -66,12 +67,12 @@ class TextProcessor:
 
         return ngrams
 
-    def fit_transform(self, texts, labels=None):
+
+    def fit_transform(self, texts):
         """
         Học vocabulary và chuyển đổi văn bản thành ma trận đặc trưng
         Args:
             texts: list, danh sách văn bản
-            labels: list, nhãn tương ứng (không bắt buộc)
         Returns:
             numpy.array: ma trận đặc trưng
         """
@@ -105,6 +106,7 @@ class TextProcessor:
 
         return np.array(x)
 
+
     def transform(self, texts):
         """
         Chuyển đổi văn bản thành ma trận đặc trưng bằng vocabulary đã học
@@ -116,7 +118,8 @@ class TextProcessor:
             numpy.array: ma trận đặc trưng
         """
         if not self.feature_names:
-            raise ValueError("Cần chạy fit_transform trước khi sử dụng transform")
+            self.fit_transform(texts)
+            self.transform(texts)
 
         feature_to_idx = {feature: idx for idx, feature in enumerate(self.feature_names)}
 
@@ -132,6 +135,7 @@ class TextProcessor:
             x.append(feature_vector)
 
         return np.array(x)
+
 
     def get_feature_names(self):
         return self.feature_names

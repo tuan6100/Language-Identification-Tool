@@ -10,26 +10,15 @@ def evaluate_model(y_true, y_pred, languages):
         y_true (list hoặc array-like): Nhãn chuẩn của tập dữ liệu.
         y_pred (list hoặc array-like): Nhãn dự đoán sau khi train và test.
         languages (list): Danh sách các nhãn ngôn ngữ được sử dụng cho Confusion Matrix.
+    Returns: Accuracy
     """
-
-    # Tính accuracy
-    # y_true = [en, vi, fr, en, ....]
-    # y_pred = [vi, vi, en, fr]
-
-
-
-    # accuracy = accuracy_score(y_true, y_pred)
-    # print(f'Accuracy: {accuracy * 100:.2f}%')
-    # print()
     accuracy = custom_accuracy_score(y_true, y_pred)
     print(f'Accuracy: {accuracy * 100:.2f}%')
 
     cm = custom_confusion_matrix(y_true, y_pred, labels=languages)
-    # Tạo classification report
     print('Classification Report:')
     custom_classification_report(cm, labels=languages)
     print()
-
 
     plt.figure(figsize=(12, 10))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -41,6 +30,7 @@ def evaluate_model(y_true, y_pred, languages):
     plt.yticks(rotation=45)
     plt.tight_layout()
     plt.show()
+    return accuracy
 
 
 # Khong dung sklearn

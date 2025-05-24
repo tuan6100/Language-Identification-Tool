@@ -1,33 +1,9 @@
-import time
-
+import os
 import pytest
 
-from src.main.python.algorithms.classification.naive_bayes import NaiveBayes
+from python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
-from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.language_name import language_names
-from src.main.python.models.text_processor import TextProcessor
-
-
-@pytest.fixture(scope="module")
-def trained_model_and_processor():
-    text_processor = TextProcessor(ngram_range=(1, 3), max_features=5000)
-    loader = DataLoaderFactory.create_loader(
-        "huggingface",
-        dataset_name="papluca/language-identification",
-    )
-    x_train, y_train = loader.load_data(loader.dataset_name, "train")
-    x_train_processed = text_processor.fit_transform(x_train)
-    feature_names = text_processor.get_feature_names()
-
-    try:
-        nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=True)
-        nb_model.fit(x_train_processed, y_train, feature_names)
-    except:
-        nb_model = NaiveBayes(alpha=0.001)
-        nb_model.fit(x_train_processed, y_train, feature_names)
-
-    return nb_model, text_processor
 
 
 @pytest.mark.parametrize("text,expected_lang", [
@@ -44,7 +20,7 @@ def trained_model_and_processor():
     ),
     (
         "Nous sommes trois. Est-ce qu'il y a encore des places disponibles ?",
-        "English"
+        "French"
     ),
     (
         "Без денег ничего не можешь купить",
@@ -67,10 +43,24 @@ def trained_model_and_processor():
         "Greek"
     )
 ])
-def test_language_prediction(trained_model_and_processor, text, expected_lang):
-    model, processor = trained_model_and_processor
-    start_time = time.time()
+def test_language_prediction_debug(text, expected_lang):
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "models", "naive_bayes_model.pkl")
+    model = None
+    processor = None
+    try:
+        print("Trying to load GPU model...")
+        model, processor = NaiveBayesCUDAOptimized.load_model(model_path, use_gpu=True)
+        print("GPU model loaded successfully")
+    except Exception as e:
+        print(f"GPU model failed: {e}")
+        try:
+            print("Trying to load CPU model...")
+            model, processor = NaiveBayes.load_model(model_path)
+            print("CPU model loaded successfully")
+        except Exception as e:
+            print(f"CPU model failed: {e}")
+            pytest.fail("Could not load any model")
     x_sample = processor.transform([text])
     prediction = model.predict(x_sample)
-    print(' Thời gian dự đoán: %s s' % (time.time() - start_time))
     assert language_names[prediction] == expected_lang
+
