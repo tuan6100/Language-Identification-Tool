@@ -3,9 +3,9 @@ import time
 
 import coloredlogs
 
-from python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
-from python.utils.dataset_comparison import compare_ngram_structure, check_exact_duplicates
-from python.utils.model_evaluation import evaluate_model
+from algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
+from utils.dataset_comparison import compare_ngram_structure, check_exact_duplicates
+from utils.model_evaluation import evaluate_model
 from src.main.python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.text_processor import TextProcessor
