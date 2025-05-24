@@ -42,6 +42,7 @@ class NaiveBayesCUDAOptimized:
             cls_label = self.idx_to_label[int(cls)]
             self.class_priors[cls_label] = float(count / total_samples)
 
+
     def compute_likelihoods(self, x, y_idx, feature_names):
         """Tính xác suất đặc trưng P(F|C) cho mỗi đặc trưng và lớp"""
         self.feature_vocab = feature_names
@@ -159,6 +160,7 @@ class NaiveBayesCUDAOptimized:
         print(f"Thời gian dự đoán: {end_time - start_time:.2f} seconds")
 
         return result[0] if len(x_gpu) == 1 else result
+
 
     def predict(self, x):
         """Dự đoán lớp cho mỗi mẫu"""

@@ -21,7 +21,7 @@ class NaiveBayes:
 
     def compute_priors(self, y):
         """
-        Tính xác suất tiên nghiệm P(C) cho mỗi lớp
+        Tính xác suất tiên nghiệm P(Ci) cho mỗi lớp
 
         Args:
             y: array-like, nhãn lớp
@@ -33,9 +33,10 @@ class NaiveBayes:
             count = sum(1 for label in y if label == cls)
             self.class_priors[cls] = count / total_samples
 
+
     def compute_likelihoods(self, x, y, feature_names):
         """
-        Tính xác suất đặc trưng P(F|C) cho mỗi đặc trưng và lớp
+        Tính xác suất đặc trưng P(Tj|Ci ) cho mỗi đặc trưng và lớp
 
         Args:
             x: array-like, ma trận đặc trưng
@@ -64,6 +65,7 @@ class NaiveBayes:
                 count = feature_counts[i]
                 self.feature_probs[cls][i] = (count + self.alpha) / (total_features + self.alpha * vocab_size)
 
+
     def fit(self, x, y, feature_names):
         """
         Huấn luyện mô hình Naive Bayes
@@ -86,6 +88,7 @@ class NaiveBayes:
         end_time = time.time()
         print(f"Thời gian huấn luyện: {end_time - start_time:.2f} giây")
 
+
     def predict_proba(self, x):
         """
         Tính xác suất dự đoán cho mỗi mẫu
@@ -105,7 +108,7 @@ class NaiveBayes:
             sample_probs = {}
 
             for cls in self.classes:
-                # Tính log-posterior: log P(C|x) = log P(C) + sum(log P(Fi|C))
+                # Tính log-posterior: log P(C|x) = log P(C) + sum(log P(Ti|C))
                 log_posterior = np.log(self.class_priors[cls])
 
                 for i, count in enumerate(sample):
@@ -114,6 +117,7 @@ class NaiveBayes:
 
                 sample_probs[cls] = log_posterior
 
+            # Log-Sum-Exp Trick
             # Chuyển từ log-space sang probability space
             max_log_posterior = max(sample_probs.values())
             for cls in sample_probs:
@@ -129,6 +133,7 @@ class NaiveBayes:
         end_time = time.time()
         print(f"Thời gian dự đoán: {end_time - start_time:.2f} giây")
         return all_probs[0] if len(x) == 1 else all_probs
+
 
     def predict(self, x):
         """
