@@ -2,6 +2,7 @@ import re
 import numpy as np
 from collections import Counter
 
+
 class TextProcessor:
     def __init__(self, ngram_range=(1, 2), max_features=500):
         """
@@ -14,7 +15,6 @@ class TextProcessor:
         self.ngram_range = ngram_range
         self.max_features = max_features
         self.feature_names = []
-        self.feature_counts = {}
 
     def clean_text(self, text):
         """
@@ -29,18 +29,18 @@ class TextProcessor:
         text = text.lower()
         text = re.sub(
             r'[^\w\s'
-            r'\u00C0-\u024F'       # Latin Extended-A/B 
-            r'\u1E00-\u1EFF'       # Latin Extended Additional 
-            r'\u0E00-\u0E7F'       # Thai
-            r'\u0400-\u04FF'       # Cyrillic (Russian, Ukraina...)
-            r'\u0600-\u06FF'       # Arabic
-            r'\u0900-\u097F'       # Devanagari (Hindi, Nepali...)
-            r'\u4E00-\u9FFF'       # CJK Unified Ideographs (Chinese, Japanese, Korean)
-            r'\u3040-\u309F'       # Hiragana (Japanese)
-            r'\u30A0-\u30FF'       # Katakana (Japanese)
-            r'\uAC00-\uD7AF'       # Hangul Syllables (Korean)
-            r'\u3130-\u318F'       # Hangul Compatibility Jamo
-            r'\u0590-\u05FF'       # Hebrew
+            r'\u00C0-\u024F'  # Latin Extended-A/B 
+            r'\u1E00-\u1EFF'  # Latin Extended Additional 
+            r'\u0E00-\u0E7F'  # Thai
+            r'\u0400-\u04FF'  # Cyrillic (Russian, Ukraina...)
+            r'\u0600-\u06FF'  # Arabic
+            r'\u0900-\u097F'  # Devanagari (Hindi, Nepali...)
+            r'\u4E00-\u9FFF'  # CJK Unified Ideographs (Chinese, Japanese, Korean)
+            r'\u3040-\u309F'  # Hiragana (Japanese)
+            r'\u30A0-\u30FF'  # Katakana (Japanese)
+            r'\uAC00-\uD7AF'  # Hangul Syllables (Korean)
+            r'\u3130-\u318F'  # Hangul Compatibility Jamo
+            r'\u0590-\u05FF'  # Hebrew
             r']',
             ' ',
             text
@@ -54,24 +54,23 @@ class TextProcessor:
         Args:
             text: str, văn bản đầu vào
         Returns:
-            list: danh sách n-grams
+            list: danh sách char-level-n-grams
         """
         ngrams = []
         cleaned_text = self.clean_text(text)
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
             for i in range(len(cleaned_text) - n + 1):
-                ngram = cleaned_text[i:i+n]
+                ngram = cleaned_text[i:i + n]
                 if not ngram.isspace():
                     ngrams.append(ngram)
 
         return ngrams
 
-    def fit_transform(self, texts, labels=None):
+    def fit_transform(self, texts):
         """
         Học vocabulary và chuyển đổi văn bản thành ma trận đặc trưng
         Args:
             texts: list, danh sách văn bản
-            labels: list, nhãn tương ứng (không bắt buộc)
         Returns:
             numpy.array: ma trận đặc trưng
         """
@@ -116,7 +115,8 @@ class TextProcessor:
             numpy.array: ma trận đặc trưng
         """
         if not self.feature_names:
-            raise ValueError("Cần chạy fit_transform trước khi sử dụng transform")
+            self.fit_transform(texts)
+            self.transform(texts)
 
         feature_to_idx = {feature: idx for idx, feature in enumerate(self.feature_names)}
 

@@ -1,14 +1,15 @@
 import logging
+import os
 import time
 
 import coloredlogs
 
 from algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
-from utils.dataset_comparison import compare_ngram_structure, check_exact_duplicates
-from utils.model_evaluation import evaluate_model
 from src.main.python.algorithms.classification.naive_bayes import NaiveBayes
 from src.main.python.models.data import DataLoaderFactory
 from src.main.python.models.text_processor import TextProcessor
+from utils.dataset_comparison import check_exact_duplicates
+from utils.model_evaluation import evaluate_model
 
 # logging.basicConfig(
 #     level=logging.INFO,
@@ -27,7 +28,7 @@ def main():
         x_train, y_train = loader.load_data('training')
         x_test, y_test = loader.load_data('test')
     except:
-        logger.info("Đang đọc dữ liệu từ huggingface")
+        logger.info("Không tìm thấy dữ liệu. Đang đọc dữ liệu từ huggingface")
         loader = DataLoaderFactory.create_loader(
             'huggingface',
             dataset_name='papluca/language-identification',
@@ -44,32 +45,39 @@ def main():
     print()
 
     logger.info('Đang xử lý văn bản...')
-    text_processor = TextProcessor(ngram_range=(1, 3), max_features=7500)
+    text_processor = TextProcessor(ngram_range=(1, 1), max_features=7500)
 
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
 
     x_test_processed = text_processor.transform(x_test)
     logger.info(f'Số đặc trưng: {len(feature_names)}')
-    logger.info('So sánh cấu trúc n-gram')
-    compare_ngram_structure(x_train_processed, x_test_processed, feature_names)
 
     logger.info('Đang huấn luyện mô hình...')
     try:
         logger.info(f"Sử dụng GPU - Optimized Version")
-        nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=False)
+        nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=True)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed)
-    except:
+    except Exception as e:
+        logger.error(e)
         logger.info(f"Sử dụng CPU ")
         nb_model = NaiveBayes(alpha=0.001)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed) # [en vi en fr ....]
 
+
     languages = sorted(list(set(y_test)))
-    evaluate_model(y_test, y_pred, languages)
+    accuracy = evaluate_model(y_test, y_pred, languages)
+
+    if accuracy > 0.9:
+        models_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'models')
+        os.makedirs(models_dir, exist_ok=True)
+        model_path = os.path.join(models_dir, f'naive_bayes_model.pkl')
+        logger.info(f'Lưu mô hình đã huấn luyện vào {model_path}')
+        nb_model.save_model(model_path, text_processor)
 
 
 if __name__ == '__main__':
