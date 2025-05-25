@@ -8,39 +8,39 @@ from src.main.python.models.language_name import language_names
 
 @pytest.mark.parametrize("text,expected_lang", [
     (
-            "Machine learning workflows are often composed of different parts. A typical pipeline consists of a pre-processing step...",
-            "English"
+        "Machine learning workflows are often composed of different parts. A typical pipeline consists of a pre-processing step...",
+        "English"
     ),
     (
-            "Trong phương thức predict() , chúng tôi sử dụng từng mô hình đã được đào tạo để dự đoán một đầu vào. "
-            "Sau đó, tổng hợp các dự đoán để đưa ra dự đoán cuối cùng. Trong trường hợp này, chúng tôi thêm tất cả các "
-            "dự đoán vào một mảng và chọn dự đoán phổ biến nhất làm kết quả tổng thể của chúng tôi. Chúng tôi đã sử dụng "
-            "hàm mode của Scipy để đơn giản hóa việc tìm dự đoán phổ biến nhất.",
-            "Vietnamese"
+        "Trong phương thức predict() , chúng tôi sử dụng từng mô hình đã được đào tạo để dự đoán một đầu vào. "
+        "Sau đó, tổng hợp các dự đoán để đưa ra dự đoán cuối cùng. Trong trường hợp này, chúng tôi thêm tất cả các "
+        "dự đoán vào một mảng và chọn dự đoán phổ biến nhất làm kết quả tổng thể của chúng tôi. Chúng tôi đã sử dụng "
+        "hàm mode của Scipy để đơn giản hóa việc tìm dự đoán phổ biến nhất.",
+        "Vietnamese"
     ),
     (
-            "Nous sommes trois. Est-ce qu'il y a encore des places disponibles ?",
-            "French"
+        "Nous sommes trois. Est-ce qu'il y a encore des places disponibles ?",
+        "French"
     ),
     (
-            "Без денег ничего не можешь купить",
-            "Russian"
+        "Без денег ничего не можешь купить",
+        "Russian"
     ),
     (
-            "自衛隊で1番の美マッチョを決める大会「自衛隊ベストボディ2018」が開催されるよ！",
-            "Japanese"
+        "自衛隊で1番の美マッチョを決める大会「自衛隊ベストボディ2018」が開催されるよ！",
+        "Japanese"
     ),
     (
-            "需要在家休息一两天。特此向您告知并望批准",
-            "Chinese"
+        "需要在家休息一两天。特此向您告知并望批准",
+        "Chinese"
     ),
     (
-            "Basitleştirmek gerekirse, bu 4 göstergeyi açıklamak için...",
-            "Turkish"
+        "Basitleştirmek gerekirse, bu 4 göstergeyi açıklamak için...",
+        "Turkish"
     ),
     (
-            "Το βιβλίο είναι ενδιαφέρον.",
-            "Greek"
+        "Το βιβλίο είναι ενδιαφέρον.",
+        "Greek"
     ),
     (
         "कृपया मुझे बताएं कि बैठक कब शुरू होगी।",
