@@ -54,7 +54,7 @@ class TextProcessor:
         Args:
             text: str, văn bản đầu vào
         Returns:
-            list: danh sách n-grams
+            list: danh sách char-level-n-grams
         """
         ngrams = []
         cleaned_text = self.clean_text(text)
