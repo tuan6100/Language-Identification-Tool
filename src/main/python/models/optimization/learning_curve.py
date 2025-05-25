@@ -9,43 +9,6 @@ from python.models.data import DataLoaderFactory
 from python.models.text_processor import TextProcessor
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-from collections import defaultdict
-from random import shuffle
-
-def stratified_kfold_split(x, y, k=5, seed=42):
-    """
-    Tự chia K-Fold có giữ phân phối lớp (stratified)
-    Trả về list các (train_indices, val_indices) cho mỗi fold
-    """
-    np.random.seed(seed)
-    y = np.array(y)
-    x = np.array(x)
-    class_indices = defaultdict(list)
-
-    # Gom index theo từng lớp
-    for idx, label in enumerate(y):
-        class_indices[label].append(idx)
-
-    # Shuffle index trong từng lớp
-    for label in class_indices:
-        shuffle(class_indices[label])
-
-    # Chia mỗi lớp thành k phần
-    folds = [[] for _ in range(k)]
-    for label, indices in class_indices.items():
-        for i, idx in enumerate(indices):
-            folds[i % k].append(idx)
-
-    # Tạo các tập (train_index, val_index)
-    split_indices = []
-    for i in range(k):
-        val_idx = folds[i]
-        train_idx = [idx for j in range(k) if j != i for idx in folds[j]]
-        split_indices.append((train_idx, val_idx))
-
-    return split_indices
 
 
 def learning_curve(model, x, y, feature_names):
