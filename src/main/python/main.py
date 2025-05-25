@@ -28,7 +28,7 @@ def main():
         x_train, y_train = loader.load_data('training')
         x_test, y_test = loader.load_data('test')
     except:
-        logger.info("Đang đọc dữ liệu từ huggingface")
+        logger.info("Không tìm thấy dữ liệu. Đang đọc dữ liệu từ huggingface")
         loader = DataLoaderFactory.create_loader(
             'huggingface',
             dataset_name='papluca/language-identification',
@@ -45,7 +45,7 @@ def main():
     print()
 
     logger.info('Đang xử lý văn bản...')
-    text_processor = TextProcessor(ngram_range=(1, 3), max_features=7500)
+    text_processor = TextProcessor(ngram_range=(1, 1), max_features=7500)
 
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
