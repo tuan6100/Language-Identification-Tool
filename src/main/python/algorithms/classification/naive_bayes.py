@@ -6,6 +6,7 @@ from collections import defaultdict, Counter
 import time
 import os
 
+
 class NaiveBayes:
     def __init__(self, alpha=1.0):
         """
@@ -18,6 +19,14 @@ class NaiveBayes:
         self.class_priors = {}
         self.feature_probs = defaultdict(dict)
         self.feature_vocab = []
+
+    def get_params(self, deep=True):
+        return {"alpha": self.alpha}
+
+    def set_params(self, **parameters):
+        for parameter, value in parameters.items():
+            setattr(self, parameter, value)
+        return self
 
     def compute_priors(self, y):
         """
@@ -32,7 +41,6 @@ class NaiveBayes:
         for cls in self.classes:
             count = sum(1 for label in y if label == cls)
             self.class_priors[cls] = count / total_samples
-
 
     def compute_likelihoods(self, x, y, feature_names):
         """
@@ -65,7 +73,6 @@ class NaiveBayes:
                 count = feature_counts[i]
                 self.feature_probs[cls][i] = (count + self.alpha) / (total_features + self.alpha * vocab_size)
 
-
     def fit(self, x, y, feature_names):
         """
         Huấn luyện mô hình Naive Bayes
@@ -87,7 +94,6 @@ class NaiveBayes:
         self.compute_likelihoods(x, y, feature_names)
         end_time = time.time()
         print(f"Thời gian huấn luyện: {end_time - start_time:.2f} giây")
-
 
     def predict_proba(self, x):
         """
@@ -134,7 +140,6 @@ class NaiveBayes:
         print(f"Thời gian dự đoán: {end_time - start_time:.2f} giây")
         return all_probs[0] if len(x) == 1 else all_probs
 
-
     def predict(self, x):
         """
         Dự đoán lớp cho mỗi mẫu
@@ -149,7 +154,6 @@ class NaiveBayes:
             return max(probs, key=probs.get)
         else:
             return [max(prob_dict, key=prob_dict.get) for prob_dict in probs]
-
 
     def save_model(self, model_path, text_processor):
         """
@@ -191,7 +195,6 @@ class NaiveBayes:
             json.dump(metadata, f, ensure_ascii=False, indent=2)
         print(f"Đã lưu metadata vào {metadata_path}")
 
-
     @classmethod
     def load_model(cls, model_path):
         model = cls()
@@ -208,5 +211,3 @@ class NaiveBayes:
             model.feature_probs[cls_name] = probs
         print(f"Đã tải mô hình từ {model_path}")
         return model, text_processor
-
-

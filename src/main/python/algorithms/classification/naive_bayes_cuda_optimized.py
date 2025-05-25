@@ -6,6 +6,8 @@ import numpy as np
 import pickle
 import json
 
+from python.models.text_processor import TextProcessor
+
 
 class NaiveBayesCUDAOptimized:
     def __init__(self, alpha=1.0, use_gpu=True):
@@ -30,6 +32,13 @@ class NaiveBayesCUDAOptimized:
         self.feature_probs_gpu = {}  # Store feature probabilities on GPU
         self.feature_vocab = []
 
+    def get_params(self, deep=True):
+        return {"alpha": self.alpha}
+
+    def set_params(self, **parameters):
+        for parameter, value in parameters.items():
+            setattr(self, parameter, value)
+        return self
 
     def compute_priors(self, y_idx):
         """Tính xác suất tiên nghiệm P(C) cho mỗi lớp"""
@@ -259,7 +268,7 @@ class NaiveBayesCUDAOptimized:
 
 
     @classmethod
-    def load_model(cls, model_path, use_gpu=True):
+    def load_model(cls, model_path, use_gpu=True) -> tuple['NaiveBayesCUDAOptimized', TextProcessor]:
         model = cls(alpha=1.0, use_gpu=use_gpu)
         with open(model_path, 'rb') as f:
             data = pickle.load(f)
