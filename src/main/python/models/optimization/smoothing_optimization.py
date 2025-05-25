@@ -7,6 +7,7 @@ from python.algorithms.classification.naive_bayes import NaiveBayes
 from python.algorithms.classification.naive_bayes_cuda_optimized import NaiveBayesCUDAOptimized
 from python.models.data import DataLoaderFactory
 from python.models.text_processor import TextProcessor
+from python.utils.dataset_comparison import check_exact_duplicates
 from python.utils.model_evaluation import evaluate_model
 
 
@@ -175,6 +176,15 @@ def main():
     print(f'Số mẫu validation: {len(x_valid)}')
     print(f'Số ngôn ngữ: {len(set(y_valid))}')
     print()
+
+    print(f'So sánh trùng lặp giữa tập train và validation')
+    check_exact_duplicates(x_train, x_valid)
+    print()
+    print(f'So sánh trùng lặp giữa tập test và validation')
+    check_exact_duplicates(x_valid, x_test)
+    print()
+
+
 
     print('Đang xử lý văn bản...')
     text_processor = TextProcessor(ngram_range=(1, 2), max_features=2000)
