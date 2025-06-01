@@ -35,7 +35,6 @@ def main():
         )
         x_train, y_train = loader.load_data(loader.dataset_name, 'train')
         x_test, y_test = loader.load_data(loader.dataset_name, 'test')
-
     logger.info(f'Số mẫu train: {len(x_train)}')
     logger.info(f'Số mẫu test: {len(x_test)}')
     logger.info(f'Số ngôn ngữ: {len(set(y_test))}')
@@ -45,7 +44,7 @@ def main():
     print()
 
     logger.info('Đang xử lý văn bản...')
-    text_processor = TextProcessor(ngram_range=(1, 1), max_features=7500)
+    text_processor = TextProcessor(ngram_range=(1, 3), max_features=7500)
 
     x_train_processed = text_processor.fit_transform(x_train)
     feature_names = text_processor.get_feature_names()
@@ -56,23 +55,22 @@ def main():
     logger.info('Đang huấn luyện mô hình...')
     try:
         logger.info(f"Sử dụng GPU - Optimized Version")
-        nb_model = NaiveBayesCUDAOptimized(alpha=0.001, use_gpu=True)
+        nb_model = NaiveBayesCUDAOptimized(alpha=0.01, use_gpu=True)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed)
     except Exception as e:
         logger.error(e)
         logger.info(f"Sử dụng CPU ")
-        nb_model = NaiveBayes(alpha=0.001)
+        nb_model = NaiveBayes(alpha=0.01)
         nb_model.fit(x_train_processed, y_train, feature_names)
         logger.info('Đang dự đoán...')
         y_pred = nb_model.predict(x_test_processed) # [en vi en fr ....]
 
-
     languages = sorted(list(set(y_test)))
     accuracy = evaluate_model(y_test, y_pred, languages)
 
-    if accuracy > 0.9:
+    if accuracy > 0.99:
         models_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'models')
         os.makedirs(models_dir, exist_ok=True)
         model_path = os.path.join(models_dir, f'naive_bayes_model.pkl')

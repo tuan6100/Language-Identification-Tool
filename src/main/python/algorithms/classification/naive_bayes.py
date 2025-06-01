@@ -1,5 +1,6 @@
 import json
 import pickle
+from datetime import datetime
 
 import numpy as np
 from collections import defaultdict, Counter
@@ -15,10 +16,11 @@ class NaiveBayes:
             alpha: float, tham số Laplace smoothing
         """
         self.alpha = alpha
-        self.classes = []
+        self.classes_ = []
         self.class_priors = {}
         self.feature_probs = defaultdict(dict)
         self.feature_vocab = []
+        self._estimator_type = "classifier"
 
     def get_params(self, deep=True):
         return {"alpha": self.alpha}
@@ -36,9 +38,9 @@ class NaiveBayes:
             y: array-like, nhãn lớp
         """
         total_samples = len(y)
-        self.classes = list(set(y))
+        self.classes_ = list(set(y))
 
-        for cls in self.classes:
+        for cls in self.classes_:
             count = sum(1 for label in y if label == cls)
             self.class_priors[cls] = count / total_samples
 
@@ -53,11 +55,9 @@ class NaiveBayes:
         """
         self.feature_vocab = feature_names
 
-        for cls in self.classes:
-            # Lấy tất cả mẫu thuộc lớp này
+        for cls in self.classes_:
             class_samples = x[y == cls]
 
-            # Đếm tần suất mỗi đặc trưng trong lớp
             feature_counts = Counter()
             total_features = 0
 
@@ -67,7 +67,6 @@ class NaiveBayes:
                         feature_counts[i] += count
                         total_features += count
 
-            # Tính xác suất với Laplace smoothing
             vocab_size = len(feature_names)
             for i, feature in enumerate(feature_names):
                 count = feature_counts[i]
@@ -83,77 +82,41 @@ class NaiveBayes:
             feature_names: list, tên các đặc trưng
         """
         start_time = time.time()
-        # Chuyển sang numpy array nếu cần
         x = np.array(x)
         y = np.array(y)
-
-        # Tính xác suất tiên nghiệm
         self.compute_priors(y)
-
-        # Tính xác suất đặc trưng có điều kiện
         self.compute_likelihoods(x, y, feature_names)
         end_time = time.time()
         print(f"Thời gian huấn luyện: {end_time - start_time:.2f} giây")
 
-    def predict_proba(self, x):
+    def predict(self, x):
         """
         Tính xác suất dự đoán cho mỗi mẫu
         Args:
             x: array-like, ma trận đặc trưng test
         Returns:
-            dict: xác suất cho mỗi lớp
+            list: lớp dự đoán
         """
         start_time = time.time()
         x = np.array(x)
         if len(x.shape) == 1:
             x = x.reshape(1, -1)
 
-        all_probs = []
-
+        all_log_probs = []
         for sample in x:
             sample_probs = {}
-
-            for cls in self.classes:
+            for cls in self.classes_:
                 # Tính log-posterior: log P(C|x) = log P(C) + sum(log P(Ti|C))
                 log_posterior = np.log(self.class_priors[cls])
-
                 for i, count in enumerate(sample):
                     if count > 0 and i in self.feature_probs[cls]:
                         log_posterior += count * np.log(self.feature_probs[cls][i])
-
                 sample_probs[cls] = log_posterior
-
-            # Log-Sum-Exp Trick
-            # Chuyển từ log-space sang probability space
-            max_log_posterior = max(sample_probs.values())
-            for cls in sample_probs:
-                sample_probs[cls] = np.exp(sample_probs[cls] - max_log_posterior)
-
-            # Chuẩn hóa
-            total_prob = sum(sample_probs.values())
-            for cls in sample_probs:
-                sample_probs[cls] /= total_prob
-
-            all_probs.append(sample_probs)
+            all_log_probs.append(sample_probs)
 
         end_time = time.time()
         print(f"Thời gian dự đoán: {end_time - start_time:.2f} giây")
-        return all_probs[0] if len(x) == 1 else all_probs
-
-    def predict(self, x):
-        """
-        Dự đoán lớp cho mỗi mẫu
-        Args:
-            x: array-like, ma trận đặc trưng test
-        Returns:
-            list: lớp dự đoán
-        """
-        probs = self.predict_proba(x)
-
-        if isinstance(probs, dict):
-            return max(probs, key=probs.get)
-        else:
-            return [max(prob_dict, key=prob_dict.get) for prob_dict in probs]
+        return [max(prob_dict, key=prob_dict.get) for prob_dict in all_log_probs]
 
     def save_model(self, model_path, text_processor):
         """
@@ -168,7 +131,7 @@ class NaiveBayes:
             os.remove(model_path)
         model_data = {
             'alpha': self.alpha,
-            'classes': self.classes,
+            'classes_': self.classes_,
             'class_priors': self.class_priors,
             'feature_probs': dict(self.feature_probs),
             'feature_vocab': self.feature_vocab
@@ -184,12 +147,13 @@ class NaiveBayes:
         if os.path.exists(metadata_path):
             os.remove(metadata_path)
         metadata = {
+            'published at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'alpha': self.alpha,
             'model_type': 'NaiveBayes',
-            'classes': self.classes,
+            'classes_': self.classes_,
             'num_features': len(self.feature_vocab),
             'class_priors': self.class_priors,
-            'num_classes': len(self.classes)
+            'num_classes': len(self.classes_)
         }
         with open(metadata_path, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, ensure_ascii=False, indent=2)
@@ -203,7 +167,7 @@ class NaiveBayes:
             model_data = data["model"]
             text_processor = data["processor"]
         model.alpha = model_data['alpha']
-        model.classes = model_data['classes']
+        model.classes_ = model_data['classes_']
         model.class_priors = model_data['class_priors']
         model.feature_vocab = model_data['feature_vocab']
         model.feature_probs = defaultdict(dict)
